@@ -1,7 +1,7 @@
 clear;
 
 % Variables
-data = readmatrix('data5.dat');
+data = readmatrix('../data/data5.dat');
 
 sensorNr = data(:,1);
 US = data(:,2);
