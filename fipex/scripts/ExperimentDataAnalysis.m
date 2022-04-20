@@ -6,12 +6,14 @@ TimeLabView=(TimeLabView-TimeLabView(1))/1000/60; %Converting time to minutes
 time=TimeLabView;
 
 %%%%% fft of the 2 Hz portion
-Fs=length(time)/(time(end)*60);     % Sampling frequency                    
+start = 82500;
+finish = 167000;
+Fs=length(time)/(time(end)*60);     % Sampling frequency 
 T = 1/Fs;             % Sampling period       
-L = 84501;             % Length of signal
+L = finish - start + 1;             % Length of signal
 t = (0:L-1)*T;        % Time vector
 
-Y = fft(detrend(IS(82500:167000)));
+Y = fft(detrend(IS(start:finish)));
 
 P2 = abs(Y/L);
 P1 = P2(1:L/2+1);
@@ -20,19 +22,21 @@ P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(L/2))/L;
 figure()
 plot(f,P1) 
-title('Single-Sided Amplitude Spectrum of X(t)')
+title('Single-Sided Amplitude Spectrum of Sensor Current (2Hz Pulse)')
 xlabel('f (Hz)')
 ylabel('|P1(f)|')
 grid on
 
 
-%%%%% fft of the 2 Hz portion
+%%%%% fft of the 1 Hz portion
+start = 197000;
+finish = 230000;
 Fs = 32.7751;            % Sampling frequency                    
 T = 1/Fs;             % Sampling period       
-L = 33001;             % Length of signal
+L = finish - start + 1;             % Length of signal
 t = (0:L-1)*T;        % Time vector
 
-Y = fft(detrend(IS(197000:230000)));
+Y = fft(detrend(IS(start:finish)));
 
 P2 = abs(Y/L);
 P1 = P2(1:L/2+1);
@@ -41,7 +45,7 @@ P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(L/2))/L;
 figure()
 plot(f,P1) 
-title('Single-Sided Amplitude Spectrum of X(t)')
+title('Single-Sided Amplitude Spectrum of Sensor Current (1Hz Pulse)')
 xlabel('f (Hz)')
 ylabel('|P1(f)|')
 grid on
