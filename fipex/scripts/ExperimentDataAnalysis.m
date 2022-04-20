@@ -1,5 +1,4 @@
 close all; clear all; clearvar; clc;
-
 load('ExperimentData.mat')
 
 TimeLabView=(TimeLabView-TimeLabView(1))/1000/60; %Converting time to minutes
