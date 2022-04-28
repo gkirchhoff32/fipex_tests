@@ -16,7 +16,7 @@ end
 % %%%%% Just looking at the current
 % figure()
 % plot(TimeLabView,IS)
-% xlabel('Time [min]')
+% xlabel('Time [min]') 
 % ylabel('Current [nA]')
 % title('Sensor Current, Is')
 % grid on
@@ -45,6 +45,18 @@ idx_pos = idx_pos(diff(idx_pos)~=1);
 
 % plot(t_2Hz, IS_2Hz)
 
+long = (diff(idx_pos)>=20);  % Identify where pulse lengths are too long
+hold on
+for i = 1:length(idx_pos)-1
+    % If pulse length too long, just take next 14 data points
+    if long(i) == 1
+        IS_plot = IS_2Hz(idx_pos(i):idx_pos(i)+14);
+    % Otherwise include data up to next spike element
+    else
+        IS_plot = IS_2Hz(idx_pos(i):idx_pos(i+1));
+    end
+    plot(IS_plot)
+end
 
 
 
