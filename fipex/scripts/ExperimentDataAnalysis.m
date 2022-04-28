@@ -138,7 +138,7 @@ end
 
 %%%%% Just looking at the current
 figure()
-plot(time,IS, 'g')
+plot(time,IS, 'b')
 xlabel('Time [min]')
 ylabel('Current [nA]')
 title('Sensor Current, Is')
