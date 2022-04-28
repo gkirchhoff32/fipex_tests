@@ -37,43 +37,45 @@ IS_2Hz = IS(idx_start:idx_end);
 
 pulse_rate = 2;  % [Hz}
 pulse_period = 1/pulse_rate;  % [s]
-npulses = floor((t_2Hz(end)-t_2Hz(1))/pulse_period);  % Number of pulses (assuming perfect 2Hz rate)
 
-% tcycle = linspace(t_2Hz(1), t_2Hz(1)+0.5*npulses, npulses);  % 0.5 sec spaced timestamps
-idx_shift = 1;
-for j = 1:npulses-1
-    t_start = t_2Hz(idx_shift);
-    t_end = t_start + 0.5;  % Find half a sec after
+% Use discrete time derivative to find indices of spikes
+dIS = diff(IS_2Hz);
+idx_pos = find(dIS > 2000);
+idx_pos = idx_pos(diff(idx_pos)~=1);
 
-    temp = t_2Hz - t_end;
-    t1 = t_2Hz(temp<=0);
-    t1 = t1(idx_shift:end);
+% plot(t_2Hz, IS_2Hz)
 
 
-%     % Create bins
-%     nbins = 60;
-%     bin_edges = linspace(0,0.5,nbins+1) + t1(1);
+
+
+
+% t_start = t_2Hz(1);
+% t_end = t_start + 0.5;  % Find half a sec after
+
+% temp = t_2Hz - t_end;
+% t1 = t_2Hz(temp<=0);
+
+% % Create bins
+% nbins = 60;
+% bin_edges = linspace(0,0.5,nbins+1) + t1(1);
 % 
-%     % Return relevant indices for this 1/2 second interval
-%     idx1 = zeros(length(t1), 1);
-%     for i = 1:length(t1)
-%         idx1(i) = find(t_2Hz==t1(i));
-%     end
-%     IS1 = IS_2Hz(idx1);
+% % Return relevant indices for this 1/2 second interval
+% idx1 = zeros(length(t1), 1);
+% for i = 1:length(t1)
+%     idx1(i) = find(t_2Hz==t1(i));
+% end
+% IS1 = IS_2Hz(idx1);
 % 
-%     hist = zeros(1, nbins);
-%     Y = discretize(t1, bin_edges);
-%     for i = 1:length(t1)
-%         hist(Y(i)) = hist(Y(i)) + IS1(i);
-%     end
-%
-    idx_shift = idx_shift + length(t1);  % Index of next cycle
-end
+% hist = zeros(1, nbins);
+% Y = discretize(t1, bin_edges);
+% for i = 1:length(t1)
+%     hist(Y(i)) = hist(Y(i)) + IS1(i);
+% end
 % 
-%     edges = linspace(0,0.5,nbins+1);
-%     bin_centers = (edges(1:end-1)+edges(2:end))/2;
-%     plot(bin_centers, hist);
-%     xlabel('time bin');
-%     ylabel('sum of currents');
-%     title('first binned cycle');
+% edges = linspace(0,0.5,nbins+1);
+% bin_centers = (edges(1:end-1)+edges(2:end))/2;
+% plot(bin_centers, hist);
+% xlabel('time bin');
+% ylabel('sum of currents');
+% title('first binned cycle');
 % 
