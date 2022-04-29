@@ -2,15 +2,16 @@ close all; clear all; clearvar; clc; format longEng;
 
 load('ExperimentData.mat')
 
-time=(TimeLabView-TimeLabView(1))/1000/60; %Converting time to minutes
+% time=(TimeLabView-TimeLabView(1))/1000/60; %Converting time to minutes
+time_sec = (TimeLabView-TimeLabView(1))/1000; % Convert time to seconds
 
 %%%% Filtering out bad measurements (> 51000 nA and < 1000 nA)
 for i=1:length(IS)          
-if 50500 <= IS(i) && IS(i) <= 51500 
-    IS(i) = NaN;
-elseif IS(i) <= 1000
-    IS(i) = NaN;
-end
+    if 50500 <= IS(i) && IS(i) <= 51500 
+        IS(i) = NaN;
+    elseif IS(i) <= 1000
+        IS(i) = NaN;
+    end
 end
 
 % %%%%% Just looking at the current
@@ -32,7 +33,8 @@ end
 idx_start = 88448;
 idx_end = 175400;
 
-t_2Hz = time(idx_start:idx_end) * 60;  % Choose segment of 2Hz pulses and convert to seconds
+% t_2Hz = time(idx_start:idx_end) * 60;  % Choose segment of 2Hz pulses and convert to seconds
+t_2Hz = time_sec(idx_start:idx_end);  % Choose segment of 2Hz pulses
 IS_2Hz = IS(idx_start:idx_end);
 
 pulse_rate = 2;  % [Hz}
@@ -41,6 +43,8 @@ pulse_period = 1/pulse_rate;  % [s]
 % Use discrete time derivative to find indices of spikes
 dIS = diff(IS_2Hz);
 idx_pos = find(dIS > 2000);
+% TODO: Problem is that if there are two 2000nA+ plus spikes, then this
+% current method chooses the second data pt. I want to select the first.
 idx_pos = idx_pos(diff(idx_pos)~=1);
 
 % plot(t_2Hz, IS_2Hz)
@@ -48,16 +52,25 @@ idx_pos = idx_pos(diff(idx_pos)~=1);
 long = (diff(idx_pos)>=20);  % Identify where pulse lengths are too long
 hold on
 for i = 1:length(idx_pos)-1
+%     if idx_pos(i) ~= 1
+%         if IS_2Hz(idx_pos(i)) > IS_2Hz(idx_pos(i)-1)
+%             i = i-1;
+%         end
+%     end
     % If pulse length too long, just take next 14 data points
     if long(i) == 1
         IS_plot = IS_2Hz(idx_pos(i):idx_pos(i)+14);
+        t_plot = t_2Hz(idx_pos(i):idx_pos(i)+14) - t_2Hz(idx_pos(i));
     % Otherwise include data up to next spike element
     else
         IS_plot = IS_2Hz(idx_pos(i):idx_pos(i+1));
+        t_plot = t_2Hz(idx_pos(i):idx_pos(i+1)) - t_2Hz(idx_pos(i));
     end
-    plot(IS_plot)
+    plot(t_plot, IS_plot, '-')
 end
-
+xlabel('Time after epoch zero [s]')
+ylabel('Current [nA]')
+title('FIPEX SEA (stacked cycles)')
 
 
 
