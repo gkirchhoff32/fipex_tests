@@ -66,11 +66,11 @@ for i = 1:length(idx_pos)-1
         IS_plot = IS_2Hz(idx_pos(i):idx_pos(i+1));
         t_plot = t_2Hz(idx_pos(i):idx_pos(i+1)) - t_2Hz(idx_pos(i));
     end
-    plot(t_plot, IS_plot, '-')
+    plot(t_plot, IS_plot, '.')
 end
 xlabel('Time after epoch zero [s]')
 ylabel('Current [nA]')
-title('FIPEX SEA (stacked cycles)')
+title('FIPEX SEA (stacked cycles) at 2Hz')
 
 
 
