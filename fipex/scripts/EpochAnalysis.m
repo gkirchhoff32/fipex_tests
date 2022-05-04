@@ -26,7 +26,7 @@ IS_1Hz = IS(start_1Hz:end_1Hz);
 pulserate_1Hz = 1;  % [Hz]
 pulserate_2Hz = 2;  % [Hz]
 spikethresh = 2e3;  % Magnitude that defines a spike [nA]
-samplimit_1Hz = 40;  % Limit on length of cycle (to catch lengthy anomalies)
+samplimit_1Hz = 40;  % Limit on length of cycle (to ignore lengthy anomalies)
 samplimit_2Hz = 20;
 
 [tplot_2Hz, ISplot_2Hz] = stackcycles(t_2Hz, IS_2Hz, pulserate_2Hz, spikethresh, samplimit_2Hz);

@@ -3,7 +3,6 @@ close all; clear all; clearvar; clc;
 % load('ExperimentData.mat')
 load('ExperimentData20220503.mat')
 
-
 ComputeFFT = 1;
 
 TimeLabView=(TimeLabView-TimeLabView(1))/1000/60; % Converting time to minutes
