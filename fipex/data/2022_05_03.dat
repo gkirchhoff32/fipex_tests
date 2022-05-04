@@ -1,4 +1,0 @@
-Sensor:Au16
-US / mV, Uref / mV, IS / nA, UH / mV, IH / mA, RH / Ohm
-
-SensorNr.; US; Uref; IS; UH; IH; RH; Time (LabView); Comment; Measurement range; range_is_change?; temp_reg_on?; heatup?; uref_reg_on?
