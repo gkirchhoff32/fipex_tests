@@ -1,6 +1,8 @@
 close all; clear all; clearvar; clc; format longEng;
 
-load('ExperimentData.mat')
+% load('ExperimentData.mat')
+load('ExperimentData20220503.mat')
+load('startendindices.mat')
 
 time_sec = (TimeLabView-TimeLabView(1))/1000; % Convert time to seconds
 
@@ -14,33 +16,27 @@ for i=1:length(IS)
 end
 
 % Choose segment of 2Hz pulses
-idx_start_2Hz = 88448;
-idx_end_2Hz = 175400;
-t_2Hz = time_sec(idx_start_2Hz:idx_end_2Hz);  
-IS_2Hz = IS(idx_start_2Hz:idx_end_2Hz);
+t_2Hz = time_sec(start_2Hz:end_2Hz);  
+IS_2Hz = IS(start_2Hz:end_2Hz);
 
 % Choose segment of 1Hz pulses
-idx_start_1Hz = 197000;
-idx_end_1Hz = 230000;
-t_1Hz = time_sec(idx_start_1Hz:idx_end_1Hz);  
-IS_1Hz = IS(idx_start_1Hz:idx_end_1Hz);
+t_1Hz = time_sec(start_1Hz:end_1Hz);  
+IS_1Hz = IS(start_1Hz:end_1Hz);
 
-% plot(t_1Hz, IS_1Hz)
+pulserate_1Hz = 1;  % [Hz]
+pulserate_2Hz = 2;  % [Hz]
+spikethresh = 2e3;  % Magnitude that defines a spike [nA]
+samplimit_1Hz = 40;  % Limit on length of cycle (to catch lengthy anomalies)
+samplimit_2Hz = 20;
 
-pulse_rate_1Hz = 1;  % [Hz]
-pulse_rate_2Hz = 2;  % [Hz]
-spike_thresh = 2e3;  % Magnitude that defines a spike [nA]
-samp_lim_1Hz = 40;  % Limit on length of cycle (to catch lengthy anomalies)
-samp_lim_2Hz = 20;
-
-[t_plot_2Hz, I_plot_2Hz] = stack_cycles(t_2Hz, IS_2Hz, pulse_rate_2Hz, spike_thresh, samp_lim_2Hz);
+[tplot_2Hz, ISplot_2Hz] = stackcycles(t_2Hz, IS_2Hz, pulserate_2Hz, spikethresh, samplimit_2Hz);
 xlabel('Time after epoch zero [s]')
 ylabel('Current [nA]')
 title('FIPEX SEA (stacked cycles) at 2Hz')
 
 hold OFF
 
-[t_plot_1Hz, I_plot_1Hz] = stack_cycles(t_1Hz, IS_1Hz, pulse_rate_1Hz, spike_thresh, samp_lim_1Hz);
+[tplot_1Hz, ISplot_1Hz] = stackcycles(t_1Hz, IS_1Hz, pulserate_1Hz, spikethresh, samplimit_1Hz);
 xlabel('Time after epoch zero [s]')
 ylabel('Current [nA]')
 title('FIPEX SEA (stacked cycles) at 1Hz')

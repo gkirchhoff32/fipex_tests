@@ -1,62 +1,48 @@
 close all; clear all; clearvar; clc;
 
-load('ExperimentData.mat')
-
-TimeLabView=(TimeLabView-TimeLabView(1))/1000/60; %Converting time to minutes
-time=TimeLabView;
-
-%%%%% fft of the 2 Hz portion
-start = 82500;
-finish = 167000;
-Fs=length(time)/(time(end)*60);     % Sampling frequency 
-T = 1/Fs;             % Sampling period       
-L = finish - start + 1;             % Length of signal
-t = (0:L-1)*T;        % Time vector
-
-Y = fft(detrend(IS(start:finish)));
-
-P2 = abs(Y/L);
-P1 = P2(1:L/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
-
-f = Fs*(0:(L/2))/L;
-figure()
-plot(f,P1) 
-title('Single-Sided Amplitude Spectrum of Sensor Current (2Hz Pulse)')
-xlabel('f (Hz)')
-ylabel('|P1(f)|')
-grid on
+% load('ExperimentData.mat')
+load('ExperimentData20220503.mat')
 
 
-%%%%% fft of the 1 Hz portion
-start = 197000;
-finish = 230000;
-Fs = 32.7751;            % Sampling frequency                    
-T = 1/Fs;             % Sampling period       
-L = finish - start + 1;             % Length of signal
-t = (0:L-1)*T;        % Time vector
+ComputeFFT = 1;
 
-Y = fft(detrend(IS(start:finish)));
+TimeLabView=(TimeLabView-TimeLabView(1))/1000/60; % Converting time to minutes
+time=TimeLabView; 
 
-P2 = abs(Y/L);
-P1 = P2(1:L/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
+if ComputeFFT
+    %%%%% fft of the 2 Hz & 1 Hz segments
+    start_2Hz = 48000;
+    end_2Hz = 166000;
+    start_1Hz = 172000;
+    end_1Hz = 241000;
+    IS_2Hz = IS(start_2Hz:end_2Hz);
+    IS_1Hz = IS(start_1Hz:end_1Hz);  
+    Fs=length(time)/(time(end)*60);     % Sampling frequency 
 
-f = Fs*(0:(L/2))/L;
-figure()
-plot(f,P1) 
-title('Single-Sided Amplitude Spectrum of Sensor Current (1Hz Pulse)')
-xlabel('f (Hz)')
-ylabel('|P1(f)|')
-grid on
+    [f_2Hz, P1_2Hz] = computespectrum(IS_2Hz, Fs);
+    [f_1Hz, P1_1Hz] = computespectrum(IS_1Hz, Fs);
 
-
+    figure()
+    plot(f_2Hz,P1_2Hz) 
+    title('Single-Sided Amplitude Spectrum of Sensor Current (2Hz Pulse)')
+    xlabel('f (Hz)')
+    ylabel('|P1(f)|')
+    grid on
+                
+    figure()
+    plot(f_1Hz,P1_1Hz) 
+    title('Single-Sided Amplitude Spectrum of Sensor Current (1Hz Pulse)')
+    xlabel('f (Hz)')
+    ylabel('|P1(f)|')
+    grid on
+        
+end
 
 %%%% Filtering out the huge signals
 for i=1:length(IS)          
-if 50500 <= IS(i) && IS(i) <= 51500 
-    IS(i)=NaN;
-end
+    if 50500 <= IS(i) && IS(i) <= 51500 
+        IS(i)=NaN;
+    end
 end
 
 
@@ -145,8 +131,8 @@ title('Sensor Current, Is')
 grid on
 
 
-
-
+% Save start and end indices for 1Hz and 2Hz for "EpochAnalysis.m" script
+save('startendindices.mat', 'start_2Hz', 'end_2Hz', 'start_1Hz', 'end_1Hz')
 
 
 
