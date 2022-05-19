@@ -1,0 +1,12 @@
+ExperimentData.mat:
+start_2Hz = 82500;
+end_2Hz = 167000;
+start_1Hz = 197000;
+end_1Hz = 230000;
+
+ExperimentData20220503.mat:
+start_2Hz = 48000;
+end_2Hz = 166000;
+start_1Hz = 172000;
+end_1Hz = 241000;
+

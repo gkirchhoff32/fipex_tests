@@ -1,7 +1,7 @@
 % Function to stack periods for superposed epoch analysis in FIPEX
 % experiments.
 
-function [t_plot, IS_plot] = stack_cycles(t, IS, pulse_rate, spike_thresh, samp_lim)
+function [t_plot, IS_plot] = stackcycles(t, IS, pulse_rate, spike_thresh, samp_lim)
     figure()
     hold ON
     pulse_period = 1/pulse_rate;  % [s]

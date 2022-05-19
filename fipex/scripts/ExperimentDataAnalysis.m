@@ -10,10 +10,10 @@ time=TimeLabView;
 
 if ComputeFFT
     %%%%% fft of the 2 Hz & 1 Hz segments
-    start_2Hz = 48000;
-    end_2Hz = 166000;
-    start_1Hz = 172000;
-    end_1Hz = 241000;
+    start_2Hz = 82500;
+    end_2Hz = 167000;
+    start_1Hz = 197000;
+    end_1Hz = 230000;
     IS_2Hz = IS(start_2Hz:end_2Hz);
     IS_1Hz = IS(start_1Hz:end_1Hz);  
     Fs=length(time)/(time(end)*60);     % Sampling frequency 
