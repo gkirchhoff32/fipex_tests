@@ -13,21 +13,20 @@ function [t_plot, IS_plot] = stackcycles(t, IS, pulse_rate, spike_thresh, samp_l
 
     % Stack cycles
     long = (diff(idx_pos)>=samp_lim);  % Identify where pulse lengths are too long
+    
+    % Instantiate t and IS matrices
+    t_plot = NaN(length(idx_pos)-1, samp_lim);
+    IS_plot = NaN(length(idx_pos)-1, samp_lim);
     for i = 1:length(idx_pos)-1
-        % If pulse length too long, just take next data up to limit minus 6
-        if long(i) == 1
-            IS_plot = IS(idx_pos(i):idx_pos(i)+(samp_lim-6));
-            t_plot = t(idx_pos(i):idx_pos(i)+(samp_lim-6)) - t(idx_pos(i));
-        % Otherwise include data up to next spike element
-        else
-            IS_plot = IS(idx_pos(i):idx_pos(i+1));
-            t_plot = t(idx_pos(i):idx_pos(i+1)) - t(idx_pos(i));
-        end
+        IS_seg = IS(idx_pos(i):idx_pos(i+1));
+        t_seg = t(idx_pos(i):idx_pos(i+1)) - t(idx_pos(i));
+        
         % Throw away elements that occur after length of pulse cycle
-        valid = t_plot<=pulse_period;
-        t_plot = t_plot(valid);
-        IS_plot = IS_plot(valid);
-
-        plot(t_plot, IS_plot, '.')
+        valid = t_seg<=pulse_period;
+        t_seg = t_seg(valid);
+        IS_seg = IS_seg(valid);
+        
+        t_plot(i, 1:length(t_seg)) = t_seg;
+        IS_plot(i, 1:length(IS_seg)) = IS_seg;
     end
 end

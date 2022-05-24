@@ -29,14 +29,29 @@ spikethresh = 2e3;  % Magnitude that defines a spike [nA]
 samplimit_1Hz = 40;  % Limit on length of cycle (to ignore lengthy anomalies)
 samplimit_2Hz = 20;
 
-[tplot_2Hz, ISplot_2Hz] = stackcycles(t_2Hz, IS_2Hz, pulserate_2Hz, spikethresh, samplimit_2Hz);
+[t_plot_2Hz, IS_plot_2Hz] = stackcycles(t_2Hz, IS_2Hz, pulserate_2Hz, spikethresh, samplimit_2Hz);
+t_plot_2Hz = round(t_plot_2Hz, 2);  % Round to remove 5th decimal variability
+
+% Set up order statistics
+[t_unique_2Hz, quartiles_IS_2Hz] = computequantiles(t_plot_2Hz, IS_plot_2Hz, 3);
+
+% Plot 2Hz behavior
+for i=1:length(t_plot_2Hz(:,1))
+    plot(t_plot_2Hz(i,:), IS_plot_2Hz(i,:), '.')
+end
+plot(t_unique_2Hz, quartiles_IS_2Hz(:, 1))
+plot(t_unique_2Hz, quartiles_IS_2Hz(:, 2))
+plot(t_unique_2Hz, quartiles_IS_2Hz(:, 3))
 xlabel('Time after epoch zero [s]')
 ylabel('Current [nA]')
 title('FIPEX SEA (stacked cycles) at 2Hz')
 
 hold OFF
 
-[tplot_1Hz, ISplot_1Hz] = stackcycles(t_1Hz, IS_1Hz, pulserate_1Hz, spikethresh, samplimit_1Hz);
+[t_plot_1Hz, IS_plot_1Hz] = stackcycles(t_1Hz, IS_1Hz, pulserate_1Hz, spikethresh, samplimit_1Hz);
+for i=1:length(t_plot_1Hz(:,1))
+    plot(t_plot_1Hz(i,:), IS_plot_1Hz(i,:), '.')
+end
 xlabel('Time after epoch zero [s]')
 ylabel('Current [nA]')
 title('FIPEX SEA (stacked cycles) at 1Hz')
