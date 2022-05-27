@@ -1,62 +1,69 @@
+
+% This script visualizes the data from the FIPEX test unit experiments. The 
+% viewer will be able to view telemetry including: Sensor Voltage (Us),
+% Reference Voltage (Uref), Sensor Current (Is & dIs), Heater Voltage (UH),
+% Heater Current (IH), and Heater Resistance (RH). The user will also have
+% the option to view the amplitude spectrum of the sensor current.
+
+% IMPORTANT: Set analysis parameters in "Parameters" section.
+
+% Grant Kirchhoff, grant.kirchhoff@colorado.edu
+% University of Colorado Boulder
+% Dep. of Aerospace Engineering Sciences
+% SWARM-EX CubeSat Mission
+
+%%
+% % % % % % % % % % % % % % % % PARAMETERS % % % % % % % % % % % % % % % %
+
 close all; clear all; clearvar; clc;
 
-load('ExperimentData.mat')
+baseDir = pwd;  % Current working directory
 
-TimeLabView=(TimeLabView-TimeLabView(1))/1000/60; %Converting time to minutes
-time=TimeLabView;
+% Input analysis settings (start & end times in minutes)
+% fname = append(pwd, '/ExperimentData/ExperimentData.mat');
+fname = append(pwd, '/ExperimentData/ExperimentData20220503.mat');
+tStart = 42.00;     % Start timestamp for analysis
+tEnd = 84.00;       % End timestamp for analysis
+pulseRate = 2;      % Pulse rate [Hz]
 
-%%%%% fft of the 2 Hz portion
-start = 82500;
-finish = 167000;
-Fs=length(time)/(time(end)*60);     % Sampling frequency 
-T = 1/Fs;             % Sampling period       
-L = finish - start + 1;             % Length of signal
-t = (0:L-1)*T;        % Time vector
+load(fname)
 
-Y = fft(detrend(IS(start:finish)));
+ComputeFFT = 1;  % Set true for fft computation
 
-P2 = abs(Y/L);
-P1 = P2(1:L/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
+%%
+% FFT computation and visualization
 
-f = Fs*(0:(L/2))/L;
-figure()
-plot(f,P1) 
-title('Single-Sided Amplitude Spectrum of Sensor Current (2Hz Pulse)')
-xlabel('f (Hz)')
-ylabel('|P1(f)|')
-grid on
+time=(TimeLabView-TimeLabView(1))/1000/60;  % Converting time to minutes
 
+if ComputeFFT
+    % fft of the 2 Hz segments
+    start2Hz = converttimetoindex(tStart, TimeLabView);
+    end2Hz = converttimetoindex(tEnd, TimeLabView);
+    IS2Hz = IS(start2Hz:end2Hz);
+    Fs=length(time)/(time(end)*60);     % Avg. sampling frequency 
 
-%%%%% fft of the 1 Hz portion
-start = 197000;
-finish = 230000;
-Fs = 32.7751;            % Sampling frequency                    
-T = 1/Fs;             % Sampling period       
-L = finish - start + 1;             % Length of signal
-t = (0:L-1)*T;        % Time vector
+    [f2Hz, P12Hz] = computespectrum(IS2Hz, Fs);
 
-Y = fft(detrend(IS(start:finish)));
+    figure()
+    plot(f2Hz,P12Hz) 
+    title(sprintf('Single-Sided Amplitude Spectrum of Sensor Current (%d Hz Pulse)', pulseRate))
+    xlabel('f (Hz)')
+    ylabel('|P1(f)|')
+    grid on
+    
+%     % Save start and end indices for 2Hz for "EpochAnalysis.m" script
+%     save('startendindices.mat', 'start2Hz', 'end2Hz')
+        
+end
 
-P2 = abs(Y/L);
-P1 = P2(1:L/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
-
-f = Fs*(0:(L/2))/L;
-figure()
-plot(f,P1) 
-title('Single-Sided Amplitude Spectrum of Sensor Current (1Hz Pulse)')
-xlabel('f (Hz)')
-ylabel('|P1(f)|')
-grid on
-
-
+%%
+% Data visualization
 
 %%%% Filtering out the huge signals
 for i=1:length(IS)          
-if 50500 <= IS(i) && IS(i) <= 51500 
-    IS(i)=NaN;
-end
+    if 50500 <= IS(i) && IS(i) <= 51500 
+        IS(i)=NaN;
+    end
 end
 
 
@@ -138,14 +145,11 @@ end
 
 %%%%% Just looking at the current
 figure()
-plot(time,IS)
+plot(time,IS, 'b')
 xlabel('Time [min]')
 ylabel('Current [nA]')
 title('Sensor Current, Is')
 grid on
-
-
-
 
 
 
