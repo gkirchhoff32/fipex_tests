@@ -21,7 +21,7 @@ baseDir = pwd;  % Current working directory
 
 % Input analysis settings (start & end times in minutes)
 % fname = append(pwd, '/ExperimentData/ExperimentData.mat');
-fname = append(pwd, '/ExperimentData/ExperimentData20220503.mat');
+fname = append(pwd, '/ExperimentData/20220503ExperimentData.mat');
 tStart = 42.00;     % Start timestamp for analysis
 tEnd = 84.00;       % End timestamp for analysis
 pulseRate = 2;      % Pulse rate [Hz]
