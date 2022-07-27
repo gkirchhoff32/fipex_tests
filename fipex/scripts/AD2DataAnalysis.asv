@@ -7,32 +7,31 @@ for j = 1:numel(S)
 end
 
 %%
-exclude_bnd = 2276;  % This index corresponds w/ 5ms, which follows the peak but precedes the ringing peak.
-
 peaks = zeros(numel(S), 1);
 for j = 1:numel(S)
-    peaks(j) = max(S(j).data(1:exclude_bnd,2));
+    peaks(j) = max(S(j).data(:,2));
 end
 
 %%
-figure(1)
-plot(peaks)
-title('Peak value per shot')
-xlabel('Shot')
-ylabel('Voltage [V]')
-yline(mean(peaks))
-hold off
+% figure(1)
+% plot(peaks)
+% title('Peak value per shot')
+% xlabel('Shot')
+% ylabel('Voltage [V]')
 
-figure(2)
+exclude_bnd = 2276  % This index corresponde
+
+figure(1)
 for j = 1:numel(S)
-    plot(S(j).data(1:exclude_bnd,1)*1e3, S(j).data(1:exclude_bnd,2));
+    plot(S(j).data(:,1), S(j).data(:,2));
     hold on
 end
 title('Stacked Signal Outputs')
-xlabel('Time [ms]')
+xlabel('Time [s]')
 ylabel('Voltage [V]')
 
-figure(3)
+
+figure(2)
 histogram(peaks, 30)
 title('Peak value per shot')
 xlabel('Peak value [V]')
