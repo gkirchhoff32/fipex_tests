@@ -25,9 +25,6 @@ v = 6272e2;  % [cm/s]
 
 vPeak = peaks;
 iPeak = vPeak / gain * 1e9;  % [nA]
-% numDensity = 0.00072685 * iPeak.^3.5259;  % [1/cm^3] From Stuttgart cal curve
-% u = sqrt(8*kB*T/pi/m);
-% flux = numDensity * (u/4 + v);
 flux = currenttoflux(iPeak, m, T, v);
 meanFlux = currenttoflux(mean(iPeak), m, T, v);
 
