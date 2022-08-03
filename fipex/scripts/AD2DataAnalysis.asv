@@ -8,31 +8,16 @@ end
 
 
 %%
-exclude_bnd = 2276;  % This index corresponds w/ 5ms, which follows the peak but precedes the ringing peak.
-
 bias = mean(S(1).data(1:100, 2));
-
-I_s = zeros(numel(S), length(S(1).data(1:exclude_bnd, 2)));
-% t   = zeros(1, length(S(1).data(:,1)));
-t = S(1).data(1:exclude_bnd, 1);
-riemann_sum = zeros(1, numel(S));
-hold on
 for j = 1:numel(S)
-    current = S(j).data(1:exclude_bnd,2);
-    current = current - bias;
-    current(current < 0.144506) = 0;
-    riemann_sum(1, j) = sum(current);
-    plot(t, I_s(j, :), '.')
-
+    I_s = S(j).data(:,2);
+    I_s = I_s - bias;
+    I_s(I_s < 17894) = 0;
+    S(j).data(:,2)
 end
 
-peaks = zeros(numel(S), 1);
-for j = 1:numel(S)
-    peaks(j) = max(S(j).data(1:exclude_bnd,2));
-end
 
-hold off
-plot(peaks, riemann_sum, '.')
+
 
 
 %%
