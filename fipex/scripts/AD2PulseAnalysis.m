@@ -1,6 +1,8 @@
 close all; clear all; clearvar; clc; format longEng;
-
-P = append(pwd, '\..\data\2022_07_26_TIA_Repeat_Test\20220726_M0004_No_Cap_25ms_328kHz\');
+% 
+%%
+% P = append(pwd, '\..\data\2022_07_26_TIA_Repeat_Test\20220726_M0004_No_Cap_25ms_328kHz\');
+P = 'C:\Users\Grant\OneDrive - UCB-O365\Grad Projects\FIPEX Tests\fipex\data\2022_08_23_0deg_Incident\30min_stabilization\';
 S = dir(fullfile(P,'*.csv')); 
 for j = 1:numel(S)
     S(j).data = readmatrix(append(P, S(j).name));
@@ -8,7 +10,7 @@ end
 
 
 %%
-exclude_bnd = 2276;  % This index corresponds w/ 5ms, which follows the peak but precedes the ringing peak.
+exclude_bnd = 2276;  % This index corresponds w/ the time preceding the ringing.
 
 gain = 8e3;  % [Ohms] 
 bias = mean(S(1).data(1:100, 2));  % Initial non-zero voltage preceding pulse
@@ -16,11 +18,11 @@ t = S(1).data(1:exclude_bnd, 1);
 difft = diff(t);
 dt = difft(1);
 vThresh = 0.17;  % [V] Threshold voltage where lower voltages are zeroed
-tThresh = 0.5e-3;  % [s] Threshold time where subsequent lower voltages are zeroed
+tThresh = 0.4e-3;  % [s] Threshold time where subsequent lower voltages are zeroed
 
 I_s = zeros(numel(S), length(S(1).data(1:exclude_bnd, 2)));
 riemann_sum = zeros(1, numel(S));
-figure(1)
+figure()
 hold on
 for j = 1:numel(S)
     voltage = S(j).data(1:exclude_bnd,2);
@@ -29,6 +31,7 @@ for j = 1:numel(S)
     current = voltage / gain;
     riemann_sum(1, j) = sum(current) * dt;
     plot(t*1e3, current*1e9, '.')
+%     plot(current*1e9, '.')
 
 end
 ylabel('Current [nA]')
@@ -41,7 +44,7 @@ for j = 1:numel(S)
 end
 
 hold off
-figure(2)
+figure()
 plot(peakCurrent*1e9, riemann_sum*1e9, 'bo')
 xlabel('Maximum Current [nA]')
 ylabel('Time-integrated Current [nA*s]')
@@ -89,7 +92,7 @@ plot(iPeak, '.', color='blue')
 title('Peak Current')
 xlabel('Shot')
 ylabel('Peak Current [nA]')
-yline(mean(iPeak), '-.r', sprintf('mean = %0.0f nA', mean(iPeak)))
+yline(mean(iPeak), '-.r', sprintf('mean = %0.2f nA', mean(iPeak)))
 hold off
 
 figure(2)
