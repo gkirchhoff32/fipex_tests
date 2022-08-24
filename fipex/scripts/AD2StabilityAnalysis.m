@@ -3,8 +3,9 @@ close all; clear all; clearvar; clc; format longEng;
 %%
 
 % P = append(pwd, '\..\data\2022_07_26_TIA_Repeat_Test\20220726_M0004_No_Cap_25ms_328kHz\');
-P = 'C:\Users\jason\OneDrive - UCB-O365\Grad Projects\FIPEX Tests\fipex\data\2022_08_23_00deg_Incident\Zero_Degree_Incident\';
-S = dir(fullfile(P,'*.csv')); 
+P = 'C:\Users\Grant\OneDrive - UCB-O365\Grad Projects\FIPEX Tests\fipex\data\2022_08_23_30deg_Incident\DataSet_1\';
+% S = dir(fullfile(P,'*.csv'));
+S = dir(fullfile(P,'*.txt'));
 for j = 1:numel(S)
     S(j).data = readmatrix(append(P, S(j).name));
 end

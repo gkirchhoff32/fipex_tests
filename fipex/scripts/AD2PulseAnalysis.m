@@ -2,15 +2,17 @@ close all; clear all; clearvar; clc; format longEng;
 % 
 %%
 % P = append(pwd, '\..\data\2022_07_26_TIA_Repeat_Test\20220726_M0004_No_Cap_25ms_328kHz\');
-P = 'C:\Users\Grant\OneDrive - UCB-O365\Grad Projects\FIPEX Tests\fipex\data\2022_08_23_0deg_Incident\30min_stabilization\';
-S = dir(fullfile(P,'*.csv')); 
+P = 'C:\Users\Grant\OneDrive - UCB-O365\Grad Projects\FIPEX Tests\fipex\data\2022_08_24_60deg_Incident\dataset1\';
+S = dir(fullfile(P,'*.txt')); 
 for j = 1:numel(S)
     S(j).data = readmatrix(append(P, S(j).name));
 end
 
 
 %%
-exclude_bnd = 2276;  % This index corresponds w/ the time preceding the ringing.
+close all
+exclude_bnd = 5000;  % This index corresponds w/ the time preceding the ringing.
+
 
 gain = 8e3;  % [Ohms] 
 bias = mean(S(1).data(1:100, 2));  % Initial non-zero voltage preceding pulse
